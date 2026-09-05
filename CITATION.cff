@@ -14,5 +14,6 @@ authors:
 license:
   - MIT          # example code, in this repo and in the tutorial's code blocks
   - CC-BY-4.0    # the tutorial prose in docs/
+doi: 10.5281/zenodo.22397164
 repository-code: "https://github.com/andytwoods/django-for-behavioural-science"
 url: "https://andytwoods.github.io/django-for-behavioural-science/"

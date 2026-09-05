@@ -1,5 +1,7 @@
 # Django for Behavioural Science
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22397164.svg)](https://doi.org/10.5281/zenodo.22397164)
+
 A research-focused tutorial showing how to host a
 **jsPsych** experiment on your own Django backend and save the data.
 
