@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v7
       - name: Sync dependencies
         run: uv sync --python 3.14
       - name: Build documentation strictly
@@ -33,7 +33,7 @@ jobs:
           - { python: "3.14", django: "git+https://github.com/django/django.git@main", label: "Django main", experimental: true }
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v7
       - name: Sync dependencies
         run: uv sync --python ${{ matrix.python }}
       - name: Pin the Django version under test

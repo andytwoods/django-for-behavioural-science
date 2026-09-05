@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v7
       - run: uv sync --python 3.14
       # --strict makes a warning fail the build: a snippet path that no longer
       # resolves, or a nav entry pointing at a file that isn't there.
