@@ -11,7 +11,7 @@ jobs:
     name: Documentation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v5
       - name: Sync dependencies
         run: uv sync --python 3.14
@@ -32,7 +32,7 @@ jobs:
           - { python: "3.14", django: "django>=6.1,<6.2", label: "Django 6.1 (blessed)" }
           - { python: "3.14", django: "git+https://github.com/django/django.git@main", label: "Django main", experimental: true }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v5
       - name: Sync dependencies
         run: uv sync --python ${{ matrix.python }}
