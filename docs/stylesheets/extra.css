@@ -1,0 +1,91 @@
+/* NOTE: the code-comment toggle feature is entirely self-contained in
+   docs/javascripts/code-comments.js — it injects its own <style>, so there is
+   deliberately no CSS for it here. */
+
+/* "source on GitHub" links, added under transcluded code blocks by
+   scripts/snippet_source.py. Sits tight under its block and reads as a link (theme
+   link colour, GitHub mark), so it's findable without shouting over the code. */
+.md-typeset .snippet-source {
+  margin: -0.6rem 0 1.2rem;
+  font-size: 0.72rem;
+  text-align: right;
+}
+.md-typeset .snippet-source a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  color: var(--md-typeset-a-color);
+}
+.md-typeset .snippet-source a:hover {
+  color: var(--md-accent-fg-color);
+}
+.md-typeset .snippet-source svg {
+  width: 1.05em;
+  height: 1.05em;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+/* Glossary terms (from includes/abbreviations.md) get a dotted underline in body text,
+   which is the point. In a heading the same marker reads as a typo rather than an
+   affordance, so strip it there — the term is nearly always marked up again in the prose
+   immediately below, where the tooltip still works. */
+.md-typeset h1 abbr,
+.md-typeset h2 abbr,
+.md-typeset h3 abbr,
+.md-typeset h4 abbr,
+.md-typeset h5 abbr,
+.md-typeset h6 abbr {
+  border-bottom: none;
+  text-decoration: none;
+  cursor: inherit;
+}
+
+/* Historical apparatus (the "Then / Now" asides). Floated to the right so the
+   chapter text wraps around it, like a margin card. */
+.md-typeset figure.apparatus {
+  float: right;
+  width: 260px;
+  margin: 0.2rem 0 1rem 1.5rem;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--md-default-fg-color--light);
+}
+.md-typeset figure.apparatus img {
+  width: 100%;
+  border-radius: 2px;
+}
+.md-typeset figure.apparatus figcaption {
+  margin-top: 0.4rem;
+  text-align: left;
+}
+/* On narrow screens there isn't room to wrap text beside it, so drop the float
+   and let it sit full-width in the flow. */
+@media screen and (max-width: 600px) {
+  .md-typeset figure.apparatus {
+    float: none;
+    width: 100%;
+    margin: 1rem 0;
+  }
+}
+
+/* Body figures that sit left rather than Material's centred default.
+   Material centres both the figure box and its contents, so the box needs
+   fit-content plus text-align to stop the image floating mid-column. */
+.md-typeset figure.left {
+  width: fit-content;
+  margin-left: 0;
+  text-align: left;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--md-default-fg-color--light);
+}
+/* Material centres figure images with `margin: 0 auto`, which text-align
+   can't override on a block element. Kill the auto left margin. */
+.md-typeset figure.left img {
+  margin-left: 0;
+}
+.md-typeset figure.left figcaption {
+  text-align: left;
+  margin-top: 0.4rem;
+}

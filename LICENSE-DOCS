@@ -1,0 +1,28 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+Copyright (c) 2026 Andy Woods
+
+The tutorial prose in docs/ is licensed under the Creative Commons Attribution
+4.0 International licence. You are free to share and adapt it, including
+commercially, provided you give appropriate credit, link to the licence, and
+indicate if you made changes.
+
+  Deed:       https://creativecommons.org/licenses/by/4.0/
+  Legal code: https://creativecommons.org/licenses/by/4.0/legalcode
+
+The example code, both in this repository and in the blocks the tutorial quotes
+from it, is under the MIT licence instead. See LICENSE.
+
+Third-party material is not covered by either licence and keeps its own terms:
+
+  docs/assets/img/gear/
+      Historical photographs from Wikimedia Commons and elsewhere. Each one's
+      licence and attribution is recorded in docs/assets/img/gear/_sources.json:
+      a mix of public domain, CC BY 4.0 and CC BY-SA 2.0.
+
+  docs/assets/img/foyer-webcam.jpg
+      Figure 9 of Woods et al. (2022), Frontiers in Virtual Reality,
+      https://doi.org/10.3389/frvir.2021.807910. Reused under CC BY 4.0.
+
+  study/static/study/jspsych/
+      jsPsych and its plugins, MIT licensed by the jsPsych authors.

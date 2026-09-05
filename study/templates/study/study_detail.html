@@ -1,0 +1,118 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ study.name }}</title>
+
+    {# The pinned jsPsych bundle, vendored into static files for reproducibility (see PLAN §5a). #}
+    <link rel="stylesheet" href="{% static 'study/jspsych/jspsych.css' %}">
+    {# The survey plugin brings its own stylesheet, and we load every plugin. #}
+    <link rel="stylesheet" href="{% static 'study/jspsych/survey.min.css' %}">
+    <script src="{% static 'study/jspsych/jspsych.js' %}"></script>
+    {# Every vendored plugin (see study.jspsych.plugin_files), so the researcher's pasted #}
+    {# code can use any trial type without anyone having to declare it up front.          #}
+    {% for plugin in jspsych_plugins %}<script src="{% static 'study/jspsych/'|add:plugin %}"></script>
+    {% endfor %}
+</head>
+<body>
+<script>
+    // --- The data-capture plumbing the *platform* provides --------------------
+    // The researcher supplies only their experiment logic (Study.code, injected
+    // below); everything around it – initialising jsPsych and, later, posting the
+    // data back to Django – is the platform's job. This is the tutorial's thesis in
+    // code: "the platform provides the plumbing; the researcher provides the experiment."
+    // Django's CSRF token, rendered into the page so the same-origin POST below
+    // can send it in the X-CSRFToken header (see the submit_data view).
+    const CSRF_TOKEN = "{{ csrf_token }}";
+    const DATA_URL = "{% url 'study:data' study.slug %}";
+    // Where to send the participant once their data is saved, e.g. the Prolific completion
+    // URL that records their submission as complete. Blank when the study doesn't need one.
+    const COMPLETION_URL = "{{ study.completion_url|escapejs }}";
+    // Preview mode (?preview=1 in the URL): run the study but save nothing, so a study can
+    // be tried without polluting the data. The server reads the flag; we just obey it.
+    const PREVIEW = {{ preview|yesno:"true,false" }};
+    // Participant identity comes from the server (read from the URL query params),
+    // not from the front-end parsing the URL itself. escapejs escapes the value for a
+    // JavaScript string, so a participant can't smuggle code onto the page via their ID.
+    const PARTICIPANT_ID = "{{ participant_id|escapejs }}";
+    const CONDITION = "{{ condition|escapejs }}";
+
+    if (PREVIEW) {
+        // Make it obvious throughout the run that nothing is being stored.
+        const banner = document.createElement("div");
+        banner.textContent = "Preview mode — this run won't be saved to the platform database";
+        banner.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:9999;padding:4px;" +
+            "text-align:center;font:14px sans-serif;background:#fee;color:#900;";
+        document.body.appendChild(banner);
+    }
+
+    // Post the collected trials to Django, and only tell the participant their data
+    // is safe once the server confirms it. A study runs once; if the save silently
+    // fails we cannot get the data back, so we wait for the response, check it
+    // succeeded, and offer a retry if it did not.
+    function saveData() {
+        const message = html => document.body.innerHTML =
+            "<div style='text-align:center;margin-top:3em;'>" + html + "</div>";
+        if (PREVIEW) {
+            // Preview run: never POST, so nothing is stored in the platform database.
+            message("<p>Preview finished. This run was <b>not</b> saved to the platform database.</p>");
+            return Promise.resolve();
+        }
+        const body = JSON.stringify({
+            participant_id: PARTICIPANT_ID,
+            condition: CONDITION,
+            trials: jsPsych.data.get().values()
+        });
+        message("<p>Saving your data, please don't close this window...</p>");
+        return fetch(DATA_URL, {
+            method: "POST",
+            mode: "same-origin",                          // don't send the CSRF token off-origin
+            headers: {"Content-Type": "application/json", "X-CSRFToken": CSRF_TOKEN},
+            body: body
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("HTTP " + response.status);  // 4xx/5xx isn't success
+                return response.json();
+            })
+            .then(result => {
+                if (COMPLETION_URL) {
+                    // Data is saved: send them back to Prolific so their submission is
+                    // recorded as complete. Confirm first, then auto-redirect (Prolific's
+                    // recommended default, avoids a "NOCODE" submission if they close the
+                    // tab), with a fallback link in case the redirect is blocked.
+                    message("<p>Data saved. Returning you to Prolific…</p>" +
+                        "<p>If you're not redirected, <a href='" + COMPLETION_URL +
+                        "'>click here to finish</a>.</p>");
+                    setTimeout(function () { window.location = COMPLETION_URL; }, 1500);
+                } else {
+                    message("<p>Thank you, your data has been saved.</p>");
+                }
+            })
+            .catch(error => {
+                // Network dropped or the server errored: keep the data in the page and
+                // let the participant retry rather than losing the session.
+                message("<p>Sorry, saving failed.</p>" +
+                    "<button onclick='saveData()'>Try again</button>");
+            });
+    }
+
+    const jsPsych = jsPsychModule.initJsPsych({
+        on_finish: saveData   // when the timeline ends, save (and confirm) the data
+    });
+
+    // The researcher's pasted code pushes trials onto this array. The available
+    // building blocks (`jsPsych`, `timeline`, and the loaded plugins) are the
+    // platform's contract with the experiment.
+    let timeline = [];
+
+    // --- Injected researcher code (Study.code) --------------------------------
+    // v1 is single-tenant and un-sandboxed: this is the researcher's own code,
+    // served to their own participants (see PLAN §3 trust-model decision).
+    {{ study.code|safe }}
+    // --- End injected code ----------------------------------------------------
+
+    jsPsych.run(timeline);
+</script>
+</body>
+</html>

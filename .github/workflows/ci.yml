@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 6 * * 1"  # weekly (Mon 06:00 UTC) – catch new Django releases without a push
+
+jobs:
+  docs:
+    name: Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Sync dependencies
+        run: uv sync --python 3.14
+      - name: Build documentation strictly
+        run: uv run mkdocs build --strict
+
+  test:
+    name: py${{ matrix.python }} · ${{ matrix.label }}
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental || false }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # pyproject pins requires-python >=3.14 (blessed line), and Django 5.2 LTS
+        # doesn't support 3.14 – so the matrix is 3.14 × {6.1 blessed, main early-warning}.
+        # To also cover 5.2 LTS, lower requires-python to >=3.13 and add a 3.13 job.
+        include:
+          - { python: "3.14", django: "django>=6.1,<6.2", label: "Django 6.1 (blessed)" }
+          - { python: "3.14", django: "git+https://github.com/django/django.git@main", label: "Django main", experimental: true }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Sync dependencies
+        run: uv sync --python ${{ matrix.python }}
+      - name: Pin the Django version under test
+        run: uv pip install "${{ matrix.django }}"
+      - name: Show versions
+        run: uv run python -c "import django; print('Django', django.get_version())"
+      - name: Run tests
+        run: uv run python manage.py test

@@ -1,0 +1,31 @@
+name: Publish docs
+
+# Publishes on every push to main, and on demand from the Actions tab
+# ("Publish docs" -> Run workflow).
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write  # mike pushes the built site to the gh-pages branch
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # mike needs full history to manage the gh-pages branch
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --python 3.14
+      - name: Validate documentation
+        run: uv run mkdocs build --strict
+      - name: Configure git for mike
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      # Publishes docs as version "6.1" (the blessed Django line) and points the
+      # "latest" alias at it. Enable Pages (Settings -> Pages -> gh-pages branch) to serve.
+      - name: Deploy with mike
+        run: uv run mike deploy --push --update-aliases 6.1 latest

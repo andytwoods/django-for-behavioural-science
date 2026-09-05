@@ -1,0 +1,14 @@
+version: 2
+updates:
+  # Python dependencies (uv). A Django release opens a PR here – that PR's CI run
+  # is the "new Django version" signal, and your cue to run `make refresh` for the
+  # screenshots (see PLAN §9e).
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

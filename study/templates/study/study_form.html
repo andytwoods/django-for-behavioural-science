@@ -1,0 +1,18 @@
+{% extends "study/base.html" %}
+{% block title %}Register a study{% endblock title %}
+{% block content %}
+  <h1>Register a study</h1>
+  <p class="lede">
+    Paste your jsPsych timeline into <strong>Code</strong>. The platform wraps it with the
+    jsPsych library and the data-capture plumbing when it serves your study.
+  </p>
+
+  {# method="post" because this changes the database; a GET should never do that. #}
+  <form method="post" class="stacked">
+    {# Django refuses the POST without this token. See chapter 4. #}
+    {% csrf_token %}
+    {# as_p renders each field, its label, its help text and any errors, in a <p>. #}
+    {{ form.as_p }}
+    <button type="submit">Register study</button>
+  </form>
+{% endblock content %}

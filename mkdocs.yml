@@ -1,0 +1,98 @@
+site_name: Django for Behavioural Science
+site_description: >-
+  Host your jsPsych experiment on your own Django backend and capture the data –
+  a research-focused companion to the official Django tutorials.
+site_author: Andy Woods
+
+# Enables the "edit this page" pencil on every page (jumps to the GitHub editor for that
+# file). Uses the current repo name; GitHub redirects if you rename it later.
+repo_url: https://github.com/andytwoods/django-for-behavioural-science
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  features:
+    - content.action.edit
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.footer   # previous / next page buttons at the foot of each page
+    - content.code.annotate
+    - content.code.copy
+    - content.tooltips   # styled tooltips for the abbreviations, in place of the browser's
+    - toc.follow
+    # Fold the right-hand page TOC into the left sidebar, under its chapter.
+    - toc.integrate
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      toggle: {icon: material/weather-night, name: Switch to dark mode}
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      toggle: {icon: material/weather-sunny, name: Switch to light mode}
+
+markdown_extensions:
+  # Jargon like "slug" gets the browser's own "there's an explanation here" affordance: a
+  # dotted underline you can hover for the definition. Terms live in one file
+  # (includes/abbreviations.md) and are auto-appended to every page by the snippets
+  # extension below, so a chapter never has to mark them up.
+  - abbr
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  # Transclude code straight from the answer-key app so snippets can never drift
+  # from the tested source (see PLAN §9d). base_path is the repo root.
+  - pymdownx.snippets:
+      base_path: ["."]
+      check_paths: true
+      auto_append: ["includes/abbreviations.md"]
+
+# Appends a "source on GitHub" link under every transcluded code block, deep-linked to the
+# lines the snippet covers.
+hooks:
+  - scripts/snippet_source.py
+  - scripts/glossary.py
+  # Links recurring names (jsPsych, ...) wherever they appear, from includes/links.md.
+  - scripts/autolink.py
+
+# `mkdocs serve` watches docs/ and mkdocs.yml by itself. These two hold content it renders
+# but wouldn't otherwise notice changing: the glossary definitions and the hooks' own
+# source. (Editing a hook still needs the server restarted — Python won't re-import it —
+# but editing includes/abbreviations.md now rebuilds like any other page.)
+watch:
+  - includes
+  - scripts
+
+nav:
+  - Home: index.md
+  - "0 · Before you start": 00-before-you-start.md
+  - "1 · Setting up the project": 01-project-setup.md
+  - "2 · Serving the experiment": 02-serving-the-experiment.md
+  - "3 · Identifying participants": 03-identifying-participants.md
+  - "4 · Capturing the data": 04-capturing-data.md
+  - "5 · Seeing & exporting": 05-seeing-exporting-data.md
+  - "6 · Testing": 06-testing.md
+  - Going further:
+    - "Study ownership (many-to-many)": advanced/study-ownership.md
+    - "Sharing page layout": advanced/base-template.md
+    - "Registering studies (forms)": advanced/registering-studies.md
+  - "Where to go next": resources.md
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/code-comments.js
+  - javascripts/links-new-tab.js
+
+extra:
+  version:
+    provider: mike
