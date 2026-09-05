@@ -1,0 +1,18 @@
+{
+  "upload_type": "software",
+  "title": "Django for Behavioural Science: tutorial and companion app",
+  "description": "<p>A tutorial for behavioural scientists on hosting a jsPsych experiment on their own Django backend, and the companion application the tutorial builds. The researcher supplies a jsPsych timeline; the app serves it to participants, captures every trial, and exports the data.</p><p>Read it at <a href=\"https://andytwoods.github.io/django-for-behavioural-science/\">andytwoods.github.io/django-for-behavioural-science</a>. Companion to Woods (2026), <em>Behavior Research Methods</em>.</p><p>Dual licensed: the example code under MIT, the tutorial prose in <code>docs/</code> under CC BY 4.0. Third-party images and the vendored jsPsych keep their own terms, listed in <code>LICENSE-DOCS</code>.</p>",
+  "creators": [
+    { "name": "Woods, Andy" }
+  ],
+  "license": "mit",
+  "version": "0.1.0",
+  "keywords": [
+    "Django",
+    "jsPsych",
+    "behavioural science",
+    "online experiments",
+    "research software",
+    "data collection"
+  ]
+}

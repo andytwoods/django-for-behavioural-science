@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Django
+db.sqlite3
+/staticfiles/
+*.log
+
+# MkDocs build output
+/site/
+
+# Secrets / local env (never commit these)
+.env
+.env.appliku
+
+# Internal review working file (not for the public repo)
+ideation/REVIEW_BRIEF.md
+
+# OS
+.DS_Store

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Study platform{% endblock title %}</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 0 1rem 2rem; color: #222; }
+    a { color: #2a6; }
+    header.site { border-bottom: 1px solid #eee; padding: 1rem 0; margin-bottom: 2rem; }
+    header.site a { text-decoration: none; font-weight: 600; font-size: 1.05rem; }
+    footer.site { border-top: 1px solid #eee; margin-top: 3rem; padding-top: 1rem; color: #999; font-size: 0.85rem; }
+    h1 { font-weight: 600; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid #eee; }
+    th { color: #777; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .stats { display: flex; gap: 2.5rem; margin: 1.5rem 0; }
+    .stat .num { font-size: 2rem; font-weight: 700; }
+    .stat .label { color: #777; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .study { padding: 1rem 0; border-bottom: 1px solid #eee; }
+    .study .name { font-size: 1.2rem; font-weight: 600; }
+    .study .meta { color: #777; font-size: 0.9rem; }
+    .links a, .exports a { margin-right: 1rem; }
+    .lede { color: #555; }
+    form.stacked p { margin: 0 0 1.25rem; }
+    form.stacked label { display: block; font-weight: 600; margin-bottom: 0.25rem; }
+    form.stacked input[type=text], form.stacked textarea { width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; font: inherit; }
+    form.stacked textarea { min-height: 14rem; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.85rem; }
+    form.stacked .helptext { display: block; color: #777; font-size: 0.85rem; margin-top: 0.25rem; }
+    form.stacked ul.errorlist { list-style: none; margin: 0 0 0.35rem; padding: 0; color: #c0392b; font-size: 0.9rem; }
+    button { font: inherit; padding: 0.55rem 1.1rem; border: 0; border-radius: 4px; background: #2a6; color: #fff; cursor: pointer; }
+  </style>
+</head>
+<body>
+  {% include "study/menu.html" %}
+  {% block content %}{% endblock content %}
+  {% include "study/footer.html" %}
+</body>
+</html>

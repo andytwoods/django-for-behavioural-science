@@ -1,0 +1,19 @@
+{% extends "study/base.html" %}
+{% block title %}Studies{% endblock title %}
+{% block content %}
+  <h1>Studies</h1>
+  {# Staff-only: participants land on this page too, so they never see the link. #}
+  {% if user.is_staff %}
+    <p class="links"><a href="{% url 'study:create' %}">Register a study →</a></p>
+  {% endif %}
+  {% for study in studies %}
+    <div class="study">
+      <div class="name">{{ study.name }}</div>
+      <div class="links">
+        <a href="{% url 'study:detail' study.slug %}?preview=1">Try it (nothing saved) →</a>
+      </div>
+    </div>
+  {% empty %}
+    <p>No studies are currently available.</p>
+  {% endfor %}
+{% endblock content %}

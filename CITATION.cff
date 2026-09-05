@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this tutorial or its example application, please cite it."
+title: "Django for Behavioural Science"
+abstract: >-
+  A research-focused tutorial and example application showing how to host a jsPsych
+  experiment on a bespoke Django backend and capture, manage and export the data.
+  Companion to Woods (2026), Behavior Research Methods.
+type: software
+version: 0.1.0
+date-released: 2026-09-05
+authors:
+  - family-names: Woods
+    given-names: Andy
+license:
+  - MIT          # example code, in this repo and in the tutorial's code blocks
+  - CC-BY-4.0    # the tutorial prose in docs/
+repository-code: "https://github.com/andytwoods/django-for-behavioural-science"
+url: "https://andytwoods.github.io/django-for-behavioural-science/"

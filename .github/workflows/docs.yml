@@ -1,0 +1,44 @@
+name: Publish docs
+
+# Publishes on every push to main, and on demand from the Actions tab
+# ("Publish docs" -> Run workflow).
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write     # deploy-pages publishes the built site
+  id-token: write  # deploy-pages authenticates over OIDC
+
+# The site is built from main and served whole, so a newer push simply wins.
+# Queue rather than cancel, so a run that is already deploying finishes cleanly.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+      - run: uv sync --python 3.14
+      # --strict makes a warning fail the build: a snippet path that no longer
+      # resolves, or a nav entry pointing at a file that isn't there.
+      - name: Build documentation
+        run: uv run mkdocs build --strict
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

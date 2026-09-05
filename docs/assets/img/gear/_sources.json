@@ -1,0 +1,54 @@
+{
+  "calkins-lab": {
+    "title": "File:Mary Whiton Calkins in a lab, undated.jpg",
+    "license": "Public domain",
+    "desc": "https://commons.wikimedia.org/wiki/File:Mary_Whiton_Calkins_in_a_lab,_undated.jpg",
+    "bytes": 212906
+  },
+  "ch2-apparatus": {
+    "title": "File:Apparatus for Personal Equation.png",
+    "license": "Public domain",
+    "desc": "https://commons.wikimedia.org/wiki/File:Apparatus_for_Personal_Equation.png",
+    "bytes": 59737
+  },
+  "ch3-tachistoscope": {
+    "title": "File:Holmes Stereoscope 1861.png",
+    "license": "CC0",
+    "desc": "https://commons.wikimedia.org/wiki/File:Holmes_Stereoscope_1861.png",
+    "bytes": 209563
+  },
+  "ch4-imac-g3": {
+    "title": "File:Imac G3 5 flavors side lineup.jpg",
+    "license": "CC BY-SA 4.0",
+    "author": "Stephen Hackett",
+    "desc": "https://commons.wikimedia.org/wiki/File:Imac_G3_5_flavors_side_lineup.jpg",
+    "bytes": 142594
+  },
+  "ch5-zeigarnik": {
+    "title": "File:Bluma Zeigarnik, April 3, 1921.jpg",
+    "license": "Public domain",
+    "author": "Andrey Zeigarnik",
+    "desc": "https://commons.wikimedia.org/wiki/File:Bluma_Zeigarnik,_April_3,_1921.jpg",
+    "bytes": 245009
+  },
+  "home-cannon": {
+    "title": "File:Annie Jump Cannon 1922 Portrait.jpg",
+    "license": "Public domain",
+    "author": "New York World-Telegram and the Sun Newspaper Photograph Collection",
+    "desc": "https://commons.wikimedia.org/wiki/File:Annie_Jump_Cannon_1922_Portrait.jpg",
+    "note": "Downscaled from the 2516x3536 original to 640x900 for the web.",
+    "bytes": 132417
+  },
+  "ch7-kymograph": {
+    "title": "File:Kymograph, cased, Europe, 1880-1930. Full view, graduated ma Wellcome L0057894.jpg",
+    "license": "CC BY 4.0",
+    "desc": "https://commons.wikimedia.org/wiki/File:Kymograph,_cased,_Europe,_1880-1930._Full_view,_graduated_ma_Wellcome_L0057894.jpg",
+    "bytes": 67886
+  },
+  "ch8-firstbug": {
+    "title": "File:First Computer Bug, 1947.jpg",
+    "license": "Public domain",
+    "desc": "https://commons.wikimedia.org/wiki/File:First_Computer_Bug,_1947.jpg",
+    "bytes": 52241
+  }
+}
