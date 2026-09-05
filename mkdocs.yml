@@ -84,6 +84,7 @@ nav:
     - "Study ownership (many-to-many)": advanced/study-ownership.md
     - "Sharing page layout": advanced/base-template.md
     - "Registering studies (forms)": advanced/registering-studies.md
+    - "Deploying": advanced/deploying.md
   - "Where to go next": resources.md
 
 extra_css:
