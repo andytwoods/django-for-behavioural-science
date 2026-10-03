@@ -15,5 +15,5 @@ dev = [
     # Material warns MkDocs 2.0 drops plugins/hooks and theme overrides; stay on 1.x.
     "mkdocs>=1.6,<2",
     "mkdocs-material>=9.7.7",
-    "playwright>=1.62.0",
+    "playwright>=1.63.0",
 ]
