@@ -1,3 +1,4 @@
+# --8<-- [start:imports]
 import csv
 import json
 
@@ -9,10 +10,7 @@ from django.views.decorators.http import require_POST
 from .forms import StudyForm
 from .jspsych import plugin_files
 from .models import Participant, Study, StudyData
-
-# A public endpoint shouldn't accept an unbounded run. This caps the trials in one
-# submission; Django's DATA_UPLOAD_MAX_MEMORY_SIZE (2.5 MB by default) caps the raw body.
-MAX_TRIALS = 10_000
+# --8<-- [end:imports]
 
 
 # --8<-- [start:study-detail-view]
@@ -81,6 +79,12 @@ def submit_data(request, slug):
 # --8<-- [end:submit-data-view]
 
 
+# --8<-- [start:submission-parsing]
+# A public endpoint shouldn't accept an unbounded run. This caps the trials in one
+# submission; Django's DATA_UPLOAD_MAX_MEMORY_SIZE (2.5 MB by default) caps the raw body.
+MAX_TRIALS = 10_000
+
+
 class SubmissionError(Exception):
     """The posted body isn't a usable submission. The message is safe to show."""
 
@@ -88,9 +92,10 @@ class SubmissionError(Exception):
 def parse_submission(body):
     """Check a posted body and return the ``(participant_id, condition, trials)`` in it.
 
-    Nothing here is trusted: it all arrived from a public endpoint, so every field is
-    checked before any of it reaches the database. Raising (rather than returning an
-    error) keeps the happy path in ``submit_data`` a straight line.
+    Anyone can send data to this public URL, so every field is checked before it
+    reaches the database. Invalid data raises ``SubmissionError`` instead of
+    returning an error value. ``submit_data`` catches it in one place, letting
+    the remaining code read straight through without an error check after each step.
     """
     # jsPsych sends a JSON body like {participant_id, condition, trials: [...]}.
     # Reject anything malformed with a 400 rather than storing half of it. Valid JSON
@@ -124,6 +129,7 @@ def parse_submission(body):
         raise SubmissionError("Every trial must be a JSON object.")
 
     return participant_id, condition, trials
+# --8<-- [end:submission-parsing]
 
 
 # --8<-- [start:study-create-view]
@@ -153,6 +159,7 @@ def study_create(request):
 # --8<-- [end:study-create-view]
 
 
+# --8<-- [start:study-list-view]
 def study_list(request):
     """Public landing page: every study on the platform.
 
@@ -161,8 +168,10 @@ def study_list(request):
     """
     studies = Study.objects.all()
     return render(request, "study/study_list.html", {"studies": studies})
+# --8<-- [end:study-list-view]
 
 
+# --8<-- [start:dashboard-view]
 @staff_member_required  # participant data is not public: only logged-in staff may view it
 def dashboard(request, slug):
     """A simple researcher view of the data collected for one study."""
@@ -175,6 +184,7 @@ def dashboard(request, slug):
         "n_participants": Participant.objects.filter(datasets__study=study).distinct().count(),
     }
     return render(request, "study/dashboard.html", context)
+# --8<-- [end:dashboard-view]
 
 
 # --8<-- [start:export-csv-view]
@@ -202,8 +212,8 @@ def export_csv(request, slug):
     # long format doesn't lose the order the trials arrived in. It's deliberately not
     # called ``trial_index``: jsPsych records a ``trial_index`` of its own (the trial's
     # place in the timeline), and that arrives as a data key below. The two usually agree,
-    # but they part company as soon as a timeline loops or the researcher filters the data
-    # before posting, so each gets its own column rather than one clashing with the other.
+    # including when a timeline loops. Filtering out trials before posting can make them
+    # differ, so each gets its own column rather than one clashing with the other.
     base_cols = ["dataset_id", "participant_id", "condition", "collected", "trial_row"]
 
     response = HttpResponse(content_type="text/csv")
@@ -248,6 +258,7 @@ def _csv_cell(value):
 # --8<-- [end:export-csv-view]
 
 
+# --8<-- [start:export-json-view]
 @staff_member_required  # nested JSON export of participant data: staff-only
 def export_json(request, slug):
     """Export a study's data as JSON: one entry per run, each with its trials."""
@@ -263,4 +274,8 @@ def export_json(request, slug):
         }
         for d in datasets
     ]
-    return JsonResponse({"study": study.slug, "datasets": payload})
+    response = JsonResponse({"study": study.slug, "datasets": payload})
+    # Download rather than display in the browser, like the CSV.
+    response["Content-Disposition"] = f'attachment; filename="{slug}_data.json"'
+    return response
+# --8<-- [end:export-json-view]

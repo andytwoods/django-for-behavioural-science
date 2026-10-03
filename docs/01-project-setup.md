@@ -1,5 +1,7 @@
 # 1 · Setting up the project
 
+<span class="time-pill">About 30 minutes</span>
+
 <figure class="apparatus" markdown>
 ![Apparatus for measuring the personal equation](assets/img/gear/ch2-apparatus.jpg)
 <figcaption markdown="span">
@@ -44,12 +46,12 @@ uv run python manage.py startapp study
     cd behavioural-study
     ```
 
-    Paths differ too, with `~/projects`, becoming `C:\Users\you\projects`.
-    Every other command in this tutorial starts
-    with `uv run`, and those are identical on Windows, macOS and Linux.
+    Paths differ too: `~/projects` becomes `C:\Users\you\projects`.
+    Other commands in this tutorial start
+    with `uv run`, which are identical on Windows, macOS and Linux.
 
 ??? question "Why `django-admin` for one command and `manage.py` for the next?"
-    They run the same underlying Django machinery, so have two commands looks a bit inconsistent. The reason is
+    They run the same underlying Django machinery, so having two commands looks a bit inconsistent. The reason is
     that `manage.py` doesn't exist yet (`startproject` is the command
     that *creates* this file). So for commands you have to run before you have created your project, use [`django-admin`](https://docs.djangoproject.com/en/6.1/ref/django-admin/);
     everything after (`startapp`, `migrate`, `runserver`), use `manage.py`.
@@ -82,6 +84,29 @@ behavioural-study/
 └── uv.lock
 ```
 
+`uv init` also made a sample `main.py`, which Django doesn't need, so delete it. It also started a git repository. Add the line `db.sqlite3` to its `.gitignore` now (as in the finished app's [`.gitignore`](https://github.com/andytwoods/django-for-behavioural-science/blob/main/.gitignore)): the database will soon hold participant data, which should never be committed alongside your code.
+
+??? question "What's a git repository, and why put it online?"
+    [Git](https://git-scm.com/) keeps a history of your project. Each time you *commit*,
+    any changes in your files you are tracking are noted, with a short message saying
+    what changed. The *repository* is that history, stored in a hidden `.git` folder
+    inside your project. If you break something at a later point, git lets you find out
+    what you did, or change and go back to a version that worked earlier. The
+    `.gitignore` file lists what git should leave out, which is why the database goes
+    in it.
+
+    Right now that history lives only on your computer. A *remote* repository is a copy
+    of it on a service such as [GitHub](https://github.com/),
+    [GitLab](https://gitlab.com/) or [Codeberg](https://codeberg.org/), and it's well
+    worth having one:
+
+    - If your laptop dies, your code and its whole history are safe
+    - Collaborators can pull your changes and send you theirs
+    - Most hosting services build your app straight from a remote repository, so
+      publishing an update is just a `git push`
+    - You can make the repository public and cite it in your paper, so others can see
+      exactly how your study was run
+
 Note that the `config/` folder holds project-wide settings and how the URLs link up to the separate apps (this is called 'routing'). The `study/`
 folder contains the Study app that we'll be developing. We need to tell Django that the study app exists by adding it to
 `INSTALLED_APPS` in `config/settings.py`:
@@ -108,16 +133,16 @@ A few things worth noticing:
 
 - Each attribute of the class (name, slug, code, created) becomes a column in our table. A
   [`slug`](https://docs.djangoproject.com/en/6.1/glossary/#term-slug) is the short,
-  URL-safe name that will appear in the study's address, like `/study/flanker/`.
+  URL-safe name that will appear in the study's address, like `/study/flanker/`
 - `code` is where the researcher's pasted jsPsych timeline lives. It's a `TextField`
-  because it needs to be able to hold a long of characters ([see Django's model field types](https://docs.djangoproject.com/en/6.1/ref/models/fields/#field-types)).
+  because it needs to be able to hold a long string of characters ([see Django's model field types](https://docs.djangoproject.com/en/6.1/ref/models/fields/#field-types)). `blank=True` makes it optional, so you can save a study now and paste its code in later
 - `__str__` (looks pretty crazy but) is a special method Django looks for automatically whenever it needs to show
   an object as text. It controls how a `Study` shows up in lists (like the admin).
-  Without it, you'd see `Study object (1)` (e.g. in the admin section), which is as useful as a kick in the head.
+  Without it, you'd see `Study object (1)` (e.g. in the admin section), which is as useful as a kick in the head
 
 ## Wire up the admin
 
-Django autogenerates for you a full admin interface if you spend a moment telling it which models you want to see. In `study/admin.py`:
+Django autogenerates for you a full admin interface if you spend a moment telling it which models you want to see. Replace the contents of `study/admin.py` with:
 
 <!-- source: study/admin.py -->
 ```python
@@ -130,7 +155,7 @@ class StudyAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ["name"]}  # fills in the slug from the name as you type
 ```
 
-Those seven lines get you the below. A full web interface where you can add, edit, delete rows in your database to your hearts content! Super powerful!
+Those few lines get you what's shown below: a full web interface where you can add, edit and delete rows in your database to your heart's content! Super powerful!
 
 <figure markdown="span">
   ![The Studies list in the Django admin, with one study added](assets/img/admin-studies-m1.png){ width="620" }
@@ -138,12 +163,12 @@ Those seven lines get you the below. A full web interface where you can add, edi
 
 !!! note "The admin is only for you!"
     Getting into the admin requires an account with staff status, and what you see there is
-    the whole model, laid out Django's way, with the ability to add, delete, and edit. It is better to give collaborators (or participants), a bespoke page containing a form with more limited permissions. To see this in action, check out
+    the whole model, laid out Django's way, with the ability to add, delete, and edit. It is better to give collaborators (or participants) a bespoke page containing a form with more limited permissions. To see this in action, check out
     [Registering studies (forms)](advanced/registering-studies.md) in Going further.
 
 ## Create the database and log in
 
-The Study model that we made above describes your data relationships. You use `makemigrations` to generate code which is used (via `migrate`) to turn that description into the actual database table. Each time you change your models, you need to make new migration files (via `makemigrations`) and update the database (via `migrate`). This seems tedious, but it's one of Django's great features: [`makemigrations`](https://docs.djangoproject.com/en/6.1/topics/migrations/) writes the migration from your model changes automatically, and because the migration files are committed alongside your code, your database schema travels with the project — anyone who clones it gets the same tables.
+The Study model that we made above describes your data relationships. You use `makemigrations` to generate code which is used (via `migrate`) to turn that description into the actual database table. Each time you change your models, you need to make new migration files (via `makemigrations`) and update the database (via `migrate`). This seems tedious, but it's one of Django's great features: [`makemigrations`](https://docs.djangoproject.com/en/6.1/topics/migrations/) writes the migration from your model changes automatically, and because the migration files are committed alongside your code, your database schema travels with the project. Anyone who clones your project gets the same tables.
 
 ```bash
 uv run python manage.py makemigrations   # writes the migration file from your model
@@ -158,7 +183,12 @@ uv run python manage.py runserver
 
 ## Checkpoint
 
-Open [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/), log in, and you'll find **Studies** — the screen you
-saw above. 'Add study', give it a name, click save, and observe how the slug is filled in automatically. You've now got a model, a database table, and a way to edit it.
+Open [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/), log in, and you'll find **Studies**, the screen you
+saw above. Click **Add study** and type a name. Watch the slug fill itself in as you go. Put anything in Code for now (you'll add a JsPsych study timeline in the next chapter), then click save. You've now got a model, a database table, and have a way to add/delete/edit studies.
+
+<figure markdown="span">
+  ![The Add study form in the Django admin: Name typed as "Stroop task", Slug filled in as "stroop-task"](assets/img/admin-study-add-m1.png){ width="620" }
+  <figcaption markdown="span">As you type the name, the slug is filled in for you. You can still edit it before you save.</figcaption>
+</figure>
 
 Next, we make a study actually do something by serving it to the browser.

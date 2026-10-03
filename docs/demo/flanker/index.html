@@ -1,20 +1,19 @@
-{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ study.name }}</title>
+    <title>Flanker task</title>
 
-    {# The pinned jsPsych bundle, kept in our own static files so every run uses the same version. #}
-    <link rel="stylesheet" href="{% static 'study/jspsych/jspsych.css' %}">
-    {# The survey plugin brings its own stylesheet, and we load every plugin. #}
-    <link rel="stylesheet" href="{% static 'study/jspsych/survey.min.css' %}">
-    <script src="{% static 'study/jspsych/jspsych.js' %}"></script>
-    {# Every vendored plugin (see study.jspsych.plugin_files), so the researcher's pasted #}
-    {# code can use any trial type without anyone having to declare it up front.          #}
-    {% for plugin in jspsych_plugins %}<script src="{% static 'study/jspsych/'|add:plugin %}"></script>
-    {% endfor %}
+    
+    <link rel="stylesheet" href="jspsych/jspsych.css">
+    
+    <script src="jspsych/jspsych.js"></script>
+    
+    
+    <script src="jspsych/plugin-html-keyboard-response.js"></script>
+    
 </head>
 <body>
 <script>
@@ -25,19 +24,19 @@
     // code: "the platform provides the plumbing; the researcher provides the experiment."
     // Django's CSRF token, rendered into the page so the same-origin POST below
     // can send it in the X-CSRFToken header (see the submit_data view).
-    const CSRF_TOKEN = "{{ csrf_token }}";
-    const DATA_URL = "{% url 'study:data' study.slug %}";
+    const CSRF_TOKEN = "";
+    const DATA_URL = "/api/study/flanker/data";
     // Where to send the participant once their data is saved, e.g. the Prolific completion
     // URL that records their submission as complete. Blank when the study doesn't need one.
-    const COMPLETION_URL = "{{ study.completion_url|escapejs }}";
+    const COMPLETION_URL = "";
     // Preview mode (?preview=1 in the URL): run the study but save nothing, so a study can
     // be tried without polluting the data. The server reads the flag; we just obey it.
-    const PREVIEW = {{ preview|yesno:"true,false" }};
+    const PREVIEW = true;
     // Participant identity comes from the server (read from the URL query params),
     // not from the front-end parsing the URL itself. escapejs escapes the value for a
     // JavaScript string, so a participant can't smuggle code onto the page via their ID.
-    const PARTICIPANT_ID = "{{ participant_id|escapejs }}";
-    const CONDITION = "{{ condition|escapejs }}";
+    const PARTICIPANT_ID = "";
+    const CONDITION = "";
 
     if (PREVIEW) {
         // Make it obvious throughout the run that nothing is being stored.
@@ -110,7 +109,48 @@
     // --- Injected researcher code (Study.code) --------------------------------
     // It isn't sandboxed: this is the researcher's own code, served to their own
     // participants, which is why only staff can create or edit a study.
-    {{ study.code|safe }}
+    // Minimal Flanker task: respond to the CENTRE arrow (f = left, j = right).
+// This is a jsPsych timeline. Paste it into a new study's "code" field in the admin.
+// (The finished app also loads it for you, in a seed migration.)
+const fixation = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: '<p style="font-size:48px;">+</p>',
+  choices: "NO_KEYS",
+  trial_duration: 500
+};
+
+const flanker = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: jsPsych.timelineVariable('stimulus'),
+  choices: ['f', 'j'],
+  data: {
+    congruency: jsPsych.timelineVariable('congruency'),
+    correct_response: jsPsych.timelineVariable('correct_response')
+  },
+  on_finish: function (data) {
+    data.correct = jsPsych.pluginAPI.compareKeys(data.response, data.correct_response);
+  }
+};
+
+const instructions = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: '<p>Press <b>f</b> if the CENTRE arrow points left, <b>j</b> if it points right.</p>' +
+            '<p>Press any key to begin.</p>'
+};
+
+timeline.push(instructions);
+timeline.push({
+  timeline: [fixation, flanker],
+  timeline_variables: [
+    { stimulus: '<p style="font-size:48px;letter-spacing:8px;">&lt;&lt;&lt;&lt;&lt;</p>', congruency: 'congruent',  correct_response: 'f' },
+    { stimulus: '<p style="font-size:48px;letter-spacing:8px;">&gt;&gt;&gt;&gt;&gt;</p>', congruency: 'congruent',  correct_response: 'j' },
+    { stimulus: '<p style="font-size:48px;letter-spacing:8px;">&gt;&gt;&lt;&gt;&gt;</p>', congruency: 'incongruent', correct_response: 'f' },
+    { stimulus: '<p style="font-size:48px;letter-spacing:8px;">&lt;&lt;&gt;&lt;&lt;</p>', congruency: 'incongruent', correct_response: 'j' }
+  ],
+  randomize_order: true,
+  repetitions: 2
+});
+
     // --- End injected code ----------------------------------------------------
 
     jsPsych.run(timeline);

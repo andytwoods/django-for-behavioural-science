@@ -18,11 +18,23 @@ Third-party material is not covered by either licence and keeps its own terms:
   docs/assets/img/gear/
       Historical photographs from Wikimedia Commons and elsewhere. Each one's
       licence and attribution is recorded in docs/assets/img/gear/_sources.json:
-      a mix of public domain, CC BY 4.0 and CC BY-SA 2.0.
+      a mix of public domain, CC0, CC BY 4.0 and CC BY-SA 4.0.
 
   docs/assets/img/foyer-webcam.jpg
       Figure 9 of Woods et al. (2022), Frontiers in Virtual Reality,
       https://doi.org/10.3389/frvir.2021.807910. Reused under CC BY 4.0.
 
-  study/static/study/jspsych/
-      jsPsych and its plugins, MIT licensed by the jsPsych authors.
+  docs/assets/img/django-london-may-2026.jpg
+      Photo of the author speaking at the Django London meetup, 7 May 2026,
+      courtesy of Django London.
+
+  docs/assets/favicon.svg (and the header logo, theme.icon.logo in mkdocs.yml)
+      "brain" from Material Design Icons by Pictogrammers, Apache License 2.0,
+      https://pictogrammers.com/library/mdi/icon/brain/ . Recoloured.
+
+  study/static/study/jspsych/ and docs/demo/flanker/jspsych/
+      jsPsych and its plugins, MIT licensed by the jsPsych authors. The survey
+      plugin bundles the SurveyJS form library (MIT, Devsoft Baltic OÜ).
+
+A readable summary of all of this is on the tutorial's Credits page
+(docs/credits.md).

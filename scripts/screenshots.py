@@ -175,6 +175,26 @@ def capture_m1_admin() -> None:
             OUT_DIR.mkdir(parents=True, exist_ok=True)
             page.screenshot(path=str(OUT_DIR / "admin-studies-m1.png"))
             print("  captured admin-studies-m1.png")
+
+            # The chapter's checkpoint: 'Add study', type a name, watch the slug fill
+            # itself in. type() rather than fill(), so the prepopulated_fields JS sees
+            # keystrokes. Code is required at this milestone, so it gets a placeholder
+            # line; cropped from Name down to the Save button.
+            page.set_viewport_size({"width": 1200, "height": 900})
+            page.goto(f"{base}/admin/study/study/add/", wait_until="networkidle")
+            page.type("#id_name", "Stroop task", delay=30)
+            page.wait_for_function("document.querySelector('#id_slug').value === 'stroop-task'")
+            page.fill("#id_code", "// your jsPsych timeline")
+            page.eval_on_selector("#id_code", "el => el.blur()")
+            first = page.locator(".field-name").bounding_box()
+            last = page.locator(".submit-row").bounding_box()
+            page.screenshot(path=str(OUT_DIR / "admin-study-add-m1.png"), clip={
+                "x": first["x"] - 12,
+                "y": first["y"] - 12,
+                "width": max(first["width"], last["width"]) + 24,
+                "height": last["y"] + last["height"] - first["y"] + 24,
+            })
+            print("  captured admin-study-add-m1.png")
             browser.close()
     finally:
         if server is not None:

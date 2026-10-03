@@ -1,6 +1,6 @@
 // Minimal Stroop task: respond to the INK colour (r = red, g = green, b = blue).
-// This is a jsPsych timeline. Paste it into a new study's "code" field in the admin,
-// or let the seed migration load it for you.
+// This is a jsPsych timeline. Paste it into a new study's "code" field in the admin.
+// (The finished app also loads it for you, in a seed migration.)
 const fixation = {
   type: jsPsychHtmlKeyboardResponse,
   stimulus: '<p style="font-size:48px;">+</p>',
@@ -13,7 +13,7 @@ const stroop = {
   stimulus: jsPsych.timelineVariable('stimulus'),
   choices: ['r', 'g', 'b'],
   data: {
-    condition: jsPsych.timelineVariable('condition'),
+    congruency: jsPsych.timelineVariable('congruency'),
     correct_response: jsPsych.timelineVariable('correct_response')
   },
   on_finish: function (data) {
@@ -31,10 +31,10 @@ timeline.push(instructions);
 timeline.push({
   timeline: [fixation, stroop],
   timeline_variables: [
-    { stimulus: '<span style="color:red;font-size:48px;">RED</span>',     condition: 'congruent',   correct_response: 'r' },
-    { stimulus: '<span style="color:green;font-size:48px;">GREEN</span>', condition: 'congruent',   correct_response: 'g' },
-    { stimulus: '<span style="color:blue;font-size:48px;">RED</span>',    condition: 'incongruent', correct_response: 'b' },
-    { stimulus: '<span style="color:red;font-size:48px;">GREEN</span>',   condition: 'incongruent', correct_response: 'r' }
+    { stimulus: '<span style="color:red;font-size:48px;">RED</span>',     congruency: 'congruent',  correct_response: 'r' },
+    { stimulus: '<span style="color:green;font-size:48px;">GREEN</span>', congruency: 'congruent',  correct_response: 'g' },
+    { stimulus: '<span style="color:blue;font-size:48px;">RED</span>',    congruency: 'incongruent', correct_response: 'b' },
+    { stimulus: '<span style="color:red;font-size:48px;">GREEN</span>',   congruency: 'incongruent', correct_response: 'r' }
   ],
   randomize_order: true,
   repetitions: 2

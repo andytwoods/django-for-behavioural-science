@@ -7,7 +7,7 @@ class Researcher(models.Model):
 
     This gives us the other half of a ManyToMany relationship with Study: one study can
     have several researchers, and one researcher can own several studies. Django creates
-    the link table (``study_researchers``) for that relationship automatically.
+    the link table (``study_study_researchers``) for that relationship automatically.
     """
 
     name = models.CharField(max_length=200)
@@ -35,7 +35,11 @@ class Study(models.Model):
         unique=True,
         help_text="Short URL-safe identifier; appears in the study URL, e.g. /study/flanker/.",
     )
-    code = models.TextField(help_text="The researcher's jsPsych timeline code (JavaScript).")
+    # blank=True lets a study be saved before its code is written. default="" rather than
+    # null=True, so "no code" has one spelling in the database (an empty string), not two.
+    code = models.TextField(
+        blank=True, default="", help_text="The researcher's jsPsych timeline code (JavaScript)."
+    )
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:

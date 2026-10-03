@@ -1,6 +1,6 @@
 // Minimal Flanker task: respond to the CENTRE arrow (f = left, j = right).
-// This is a jsPsych timeline. Paste it into a new study's "code" field in the admin,
-// or let the seed migration load it for you.
+// This is a jsPsych timeline. Paste it into a new study's "code" field in the admin.
+// (The finished app also loads it for you, in a seed migration.)
 const fixation = {
   type: jsPsychHtmlKeyboardResponse,
   stimulus: '<p style="font-size:48px;">+</p>',
@@ -13,7 +13,7 @@ const flanker = {
   stimulus: jsPsych.timelineVariable('stimulus'),
   choices: ['f', 'j'],
   data: {
-    condition: jsPsych.timelineVariable('condition'),
+    congruency: jsPsych.timelineVariable('congruency'),
     correct_response: jsPsych.timelineVariable('correct_response')
   },
   on_finish: function (data) {
@@ -31,10 +31,10 @@ timeline.push(instructions);
 timeline.push({
   timeline: [fixation, flanker],
   timeline_variables: [
-    { stimulus: '<p style="font-size:48px;letter-spacing:8px;">&lt;&lt;&lt;&lt;&lt;</p>', condition: 'congruent',   correct_response: 'f' },
-    { stimulus: '<p style="font-size:48px;letter-spacing:8px;">&gt;&gt;&gt;&gt;&gt;</p>', condition: 'congruent',   correct_response: 'j' },
-    { stimulus: '<p style="font-size:48px;letter-spacing:8px;">&gt;&gt;&lt;&gt;&gt;</p>', condition: 'incongruent', correct_response: 'f' },
-    { stimulus: '<p style="font-size:48px;letter-spacing:8px;">&lt;&lt;&gt;&lt;&lt;</p>', condition: 'incongruent', correct_response: 'j' }
+    { stimulus: '<p style="font-size:48px;letter-spacing:8px;">&lt;&lt;&lt;&lt;&lt;</p>', congruency: 'congruent',  correct_response: 'f' },
+    { stimulus: '<p style="font-size:48px;letter-spacing:8px;">&gt;&gt;&gt;&gt;&gt;</p>', congruency: 'congruent',  correct_response: 'j' },
+    { stimulus: '<p style="font-size:48px;letter-spacing:8px;">&gt;&gt;&lt;&gt;&gt;</p>', congruency: 'incongruent', correct_response: 'f' },
+    { stimulus: '<p style="font-size:48px;letter-spacing:8px;">&lt;&lt;&gt;&lt;&lt;</p>', congruency: 'incongruent', correct_response: 'j' }
   ],
   randomize_order: true,
   repetitions: 2

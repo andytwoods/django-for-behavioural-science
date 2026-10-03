@@ -10,3 +10,7 @@
 
 [jsPsych]: https://www.jspsych.org/
 [Docker]: https://docs.docker.com/get-started/docker-overview/
+[one-to-many]: https://docs.djangoproject.com/en/6.1/topics/db/models/#many-to-one-relationships
+[many-to-one]: https://docs.djangoproject.com/en/6.1/topics/db/models/#many-to-one-relationships
+[many-to-many]: https://docs.djangoproject.com/en/6.1/topics/db/models/#many-to-many-relationships
+[one-to-one]: https://docs.djangoproject.com/en/6.1/topics/db/models/#one-to-one-relationships

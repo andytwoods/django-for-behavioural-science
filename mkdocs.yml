@@ -11,6 +11,10 @@ edit_uri: edit/main/docs/
 
 theme:
   name: material
+  favicon: assets/favicon.svg
+  # Header logo: the same brain icon as the favicon (Material Design Icons, Apache 2.0).
+  icon:
+    logo: material/brain
   features:
     - content.action.edit
     - navigation.instant
@@ -77,14 +81,17 @@ nav:
   - "1 · Setting up the project": 01-project-setup.md
   - "2 · Serving the experiment": 02-serving-the-experiment.md
   - "3 · Identifying participants": 03-identifying-participants.md
-  - "4 · Capturing the data": 04-capturing-data.md
+  - "4a · Capturing the data": 04-capturing-data.md
+  - "4b · Finishing the run": 04b-finishing-the-run.md
   - "5 · Seeing & exporting": 05-seeing-exporting-data.md
   - "6 · Testing": 06-testing.md
+  - "7 · What you've built": 07-what-youve-built.md
   - Going further:
     - "Study ownership (many-to-many)": advanced/study-ownership.md
     - "Sharing page layout": advanced/base-template.md
     - "Registering studies (forms)": advanced/registering-studies.md
   - "Where to go next": resources.md
+  - Credits: credits.md
 
 extra_css:
   - stylesheets/extra.css

@@ -89,3 +89,52 @@
   text-align: left;
   margin-top: 0.4rem;
 }
+
+/* The live Flanker demo embedded on the home page (docs/demo/flanker/, built by
+   scripts/build_demo.py). Sized to hold the instructions and the arrows without a
+   scrollbar, and shrinks with the column on a phone. */
+.md-typeset .demo-frame {
+  width: 100%;
+  max-width: 560px;
+  height: 320px;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 4px;
+  background: #fff;
+}
+
+/* Time estimate at the top of each chapter: a small rounded "pill" with a clock icon.
+   The clock is "clock-outline" from Material Design Icons (Apache 2.0), used as a mask so
+   it takes the pill's text colour in both light and dark mode. */
+.md-typeset .time-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.2em 0.8em 0.2em 0.6em;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--md-primary-fg-color--dark);
+  background: color-mix(in srgb, var(--md-primary-fg-color) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--md-primary-fg-color) 30%, transparent);
+}
+.md-typeset .time-pill::before {
+  content: "";
+  width: 1.1em;
+  height: 1.1em;
+  flex-shrink: 0;
+  background-color: currentColor;
+  -webkit-mask: var(--time-pill-icon) center / contain no-repeat;
+  mask: var(--time-pill-icon) center / contain no-repeat;
+}
+:root {
+  --time-pill-icon: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>');
+}
+/* Pull the pill up towards the chapter title above it. */
+.md-typeset p:has(> .time-pill) {
+  margin-top: -1.1rem;
+}
+[data-md-color-scheme="slate"] .md-typeset .time-pill {
+  color: var(--md-primary-fg-color--light);
+  background: color-mix(in srgb, var(--md-primary-fg-color) 22%, transparent);
+}

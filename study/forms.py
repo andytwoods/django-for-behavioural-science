@@ -6,12 +6,12 @@ admin does this too, behind the scenes; writing the form yourself is how you put
 page of your own, for people who don't have an admin login.
 """
 
+# --8<-- [start:study-form]
 from django import forms
 
 from .models import Study
 
 
-# --8<-- [start:study-form]
 class StudyForm(forms.ModelForm):
     class Meta:
         model = Study

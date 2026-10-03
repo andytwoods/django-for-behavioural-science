@@ -6,13 +6,20 @@ from .jspsych import plugin_files
 from .models import Participant, Study, StudyData
 
 
+# --8<-- [start:capture-test]
 class DataCaptureTests(TestCase):
     """The data-capture endpoint is the heart of the platform, so it is the first
-    thing we test. The paper points readers at this file (R1.18, R2.9)."""
+    thing we test."""
 
-    # --8<-- [start:capture-test]
+    @classmethod
+    def setUpTestData(cls):
+        # The test database starts empty, so make the study the tests post to. (The
+        # finished app also seeds 'flanker' in a data migration, hence get_or_create.)
+        Study.objects.get_or_create(
+            slug="flanker", defaults={"name": "Flanker task", "code": "timeline.push();"}
+        )
+
     def test_posting_trials_creates_a_dataset(self):
-        # 'flanker' is seeded by the 0002 data migration, which runs for the test DB.
         url = reverse("study:data", args=["flanker"])
         payload = {
             "participant_id": "p01",
@@ -36,6 +43,7 @@ class DataCaptureTests(TestCase):
         self.assertEqual(dataset.data[0]["rt"], 512)
     # --8<-- [end:capture-test]
 
+    # --8<-- [start:failure-tests]
     def test_get_is_not_allowed(self):
         response = self.client.get(reverse("study:data", args=["flanker"]))
         self.assertEqual(response.status_code, 405)
@@ -50,6 +58,7 @@ class DataCaptureTests(TestCase):
         response = self.client.post(url, data="not json", content_type="application/json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(StudyData.objects.count(), 0)
+    # --8<-- [end:failure-tests]
 
     def test_non_object_json_is_rejected(self):
         # Valid JSON, but a bare list (or null, or a string) is the wrong shape.
@@ -214,12 +223,25 @@ class ExportTests(TestCase):
         self.assertEqual(payload["datasets"][0]["participant_id"], "p01")
 
 
+# --8<-- [start:form-test]
 class StudyFormTests(TestCase):
     """Registering a study through the site's own ModelForm (``study/forms.py``)."""
 
     def setUp(self):
         staff = get_user_model().objects.create_user("registrar", password="pw", is_staff=True)
         self.client.force_login(staff)
+
+    def test_valid_post_creates_the_study(self):
+        response = self.client.post(
+            reverse("study:create"),
+            data={"name": "Posner cueing task", "slug": "posner", "code": "timeline.push();"},
+        )
+
+        # A successful save redirects to the new study, so the researcher can try it.
+        self.assertRedirects(response, reverse("study:detail", args=["posner"]))
+        study = Study.objects.get(slug="posner")
+        self.assertEqual(study.name, "Posner cueing task")
+    # --8<-- [end:form-test]
 
     def test_the_form_is_not_public(self):
         # `code` is JavaScript served to participants, so an anonymous visitor is sent
@@ -230,19 +252,6 @@ class StudyFormTests(TestCase):
     def test_public_study_list_does_not_advertise_the_form(self):
         response = Client().get(reverse("study:list"))
         self.assertNotContains(response, reverse("study:create"))
-
-    # --8<-- [start:form-test]
-    def test_valid_post_creates_the_study(self):
-        response = self.client.post(
-            reverse("study:create"),
-            data={"name": "Posner cueing task", "slug": "posner", "code": "const timeline = [];"},
-        )
-
-        # A successful save redirects to the new study, so the researcher can try it.
-        self.assertRedirects(response, reverse("study:detail", args=["posner"]))
-        study = Study.objects.get(slug="posner")
-        self.assertEqual(study.name, "Posner cueing task")
-    # --8<-- [end:form-test]
 
     def test_the_form_offers_only_the_three_editable_fields(self):
         response = self.client.get(reverse("study:create"))
@@ -258,7 +267,7 @@ class StudyFormTests(TestCase):
         # rather than letting the database raise.
         response = self.client.post(
             reverse("study:create"),
-            data={"name": "Another flanker", "slug": "flanker", "code": "const timeline = [];"},
+            data={"name": "Another flanker", "slug": "flanker", "code": "timeline.push();"},
         )
         self.assertEqual(response.status_code, 200)  # re-rendered, not redirected
         self.assertContains(response, "already exists")
@@ -276,7 +285,7 @@ class StudyFormTests(TestCase):
     def test_a_slug_with_illegal_characters_is_rejected(self):
         response = self.client.post(
             reverse("study:create"),
-            data={"name": "Bad slug", "slug": "not a slug!", "code": "const timeline = [];"},
+            data={"name": "Bad slug", "slug": "not a slug!", "code": "timeline.push();"},
         )
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Study.objects.filter(name="Bad slug").exists())
