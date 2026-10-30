@@ -23,4 +23,13 @@ For this tutorial it will help if you have some experience with Python and prefe
 - A code editor. I love [PyCharm](https://www.jetbrains.com/pycharm/), which is developed by JetBrains, a software company founded in Prague (the professional version is [free for academics](https://www.jetbrains.com/community/education/)). Microsoft's free alternative is [Visual Studio Code](https://code.visualstudio.com/) (guide to [setting it up for Django](https://code.visualstudio.com/docs/python/tutorial-django))
 - A terminal 🖥️ ([how to open one](https://tutorial.djangogirls.org/en/intro_to_command_line/))
 
+## In the age of AI, why go through this tutorial?!
+
+Already AI can build this sort of project rather quickly. Working through this tutorial though I feel is still a rather important step:
+
+- You're responsible for your participants' data. Knowing where and how it is stored and whether appropriate steps have been taken to protect that data, is utterly key!
+- AI makes mistakes and can do things inefficiently.
+
+My recommendation is to go through this tutorial, perhaps with an AI assistant to answer questions. By all means use AI to help you build projects, but having a solid understanding of how things work underneath feels a wise step.
+
 In the next chapters we get the project running and a study showing in the browser.

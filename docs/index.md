@@ -49,4 +49,9 @@ you want that), and stores study data in a database that you can then browse and
 - Most blocks have a "… on GitHub" link underneath which takes you to the file on GitHub
 - Some terms here have a dotted underline. Hover over, or tap,
   the term, for a brief explanation (e.g. slug)
+- Doing this over several sittings? [Chapter 1](01-project-setup.md#checkpoint) explains how to pick up where you left off
 - If you spot a mistake, please let me know! Click the GitHub link in the menu bar, then click 'Issues' in GitHub's own menu. Thanks!
+
+## Thank you
+
+Many thanks to Jan Cernik for his thorough beta testing of this tutorial.

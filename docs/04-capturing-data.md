@@ -64,6 +64,16 @@ Then create the database tables for them:
 
 --8<-- "includes/migrate-reminder.md"
 
+<figure id="migration-output" markdown="span">
+  ![Terminal output: makemigrations lists the new models, and migrate prints OK](assets/img/migrations-applied.png){ width="620" }
+  <figcaption markdown="span">It worked. `makemigrations` lists the new models, and `migrate` prints `OK`.</figcaption>
+</figure>
+
+<figure markdown="span">
+  ![Terminal output: makemigrations says No changes detected, and migrate says No migrations to apply](assets/img/migrations-none.png){ width="620" }
+  <figcaption markdown="span">Nothing to do. This is fine if you've already run the migrations, but if you've just changed a model, it usually means the file isn't saved yet.</figcaption>
+</figure>
+
 Don't worry too much about concepts such as [ForeignKeys](https://docs.djangoproject.com/en/6.1/ref/models/fields/#foreignkey), `on_delete`
 rules and `JSONField`. What matters here is that a `StudyData` row belongs to one study and
 one participant, and holds this person's data as JSON. Register them in the admin so you can
@@ -272,6 +282,13 @@ server's reply arrives, and `.catch` runs if anything along the way fails.
       row. When you analyse your data, check for repeated runs from the same participant
 
 ??? warning "Troubleshooting"
+    **"Sorry, saving failed."** This one message covers several different problems. Leave the page open, because **Try again** can still save the run, and look at the terminal running your server:
+
+    - The server has stopped (perhaps you closed the terminal): start it again with `uv run python manage.py runserver`, then press **Try again**
+    - An error ending in `no such table`: the migrations haven't been applied. Run the two migration commands from earlier in this chapter ([what you should see](#migration-output)), then press **Try again**
+    - A line containing `POST /api/study/flanker/data` with a number at the end: that number is the status code, so match it against the entries below. A `500` means your code hit an error, which is described just above that line
+    - Nothing new in the terminal: press F12 in your browser and open the **Console** tab to see what went wrong
+
     **`403 Forbidden` when the data posts.** This is a CSRF issue: the CSRF token is missing
     or is incorrect. Make sure that your template includes `{{ csrf_token }}`.
 

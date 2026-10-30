@@ -19,7 +19,7 @@ Then we link it to `Study` with a `ManyToManyField`. Add this inside the `Study`
 --8<-- "study/models.py:researchers-field"
 ```
 
-That's a new model and a new field, so both need migrating:
+That's a new model and a new field, so both need migrating (see [Chapter 4a for screenshots](../04-capturing-data.md#migration-output)):
 
 --8<-- "includes/migrate-reminder.md"
 

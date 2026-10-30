@@ -175,11 +175,17 @@ uv run python manage.py makemigrations   # writes the migration file from your m
 uv run python manage.py migrate          # applies it to the database
 ```
 
+[Chapter 4a has screenshots](04-capturing-data.md#migration-output) of what you should see when migrations are applied, and when there's nothing to do.
+
 Let's also create a login for you and start the server:
 ```bash
 uv run python manage.py createsuperuser  # make yourself an admin login
 uv run python manage.py runserver
 ```
+
+Leave this terminal open while you work, because closing it stops the server. If you need to run another command, open a second terminal in the same project folder.
+
+Coming back in a new session? Open a terminal in the project folder and run `uv run python manage.py runserver` again. Closing a terminal doesn't undo your migrations, as they're stored in the database, so you only need to run them after you change a model ([what you should see](04-capturing-data.md#migration-output)).
 
 ## Checkpoint
 

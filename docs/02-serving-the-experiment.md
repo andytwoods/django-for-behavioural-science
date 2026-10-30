@@ -265,18 +265,10 @@ click **Studies → Add study**. Fill in three fields:
 
 - Name: `Flanker task`
 - Slug: this fills itself in from the name as `flanker-task`. Change it to just `flanker`, so the address (`/study/flanker/`) matches the links in this tutorial
-- Code: paste one of the timelines below
+- Code: click the copy button in the top-right corner of the Flanker code below, and paste it all into this box
 
-<figure markdown="span">
-  ![The Add study form in the Django admin, with Name, Slug and Code filled in](assets/img/admin-study-add.png){ width="620" }
-  <figcaption markdown="span">Adding the Flanker task. The slug fills itself in from the
-  name, and `code` takes the timeline as-is.</figcaption>
-</figure>
+=== "Flanker task"
 
-
-Save it, and the study is live at `http://127.0.0.1:8000/study/flanker/`.
-
-??? example "Flanker task: `study/seed_studies/flanker.js`"
     Respond to the centre arrow while the flanking arrows agree (`<<<<<`) or disagree
     (`>><>>`) with it. Uses one plugin, `html-keyboard-response`.
 
@@ -284,13 +276,25 @@ Save it, and the study is live at `http://127.0.0.1:8000/study/flanker/`.
     --8<-- "study/seed_studies/flanker.js"
     ```
 
-??? example "Stroop task: `study/seed_studies/stroop.js`"
-    Name the ink colour of a colour word, where word and ink match or clash. Also one
-    plugin, `html-keyboard-response`.
+=== "Stroop task"
+
+    An optional second study, added the same way with the slug `stroop`. Name the ink
+    colour of a colour word, where word and ink match or clash. Also one plugin,
+    `html-keyboard-response`.
 
     ```javascript
     --8<-- "study/seed_studies/stroop.js"
     ```
+
+<figure markdown="span">
+  ![The Add study form in the Django admin, with Name, Slug and Code filled in](assets/img/admin-study-add.png){ width="620" }
+  <figcaption markdown="span">Adding the Flanker task. The slug fills itself in from the
+  name, and `code` takes the timeline as-is. This picture shows only the start of the code, so copy from the box above rather than from here.</figcaption>
+</figure>
+
+
+Save it, and the study is live at `http://127.0.0.1:8000/study/flanker/`.
+
 ??? note "I've found a jsPsych study on the web. What code do I copy from it to get it to work here?"
     Just the JavaScript that builds your trials, not a whole HTML page. The platform
     already calls `initJsPsych()` and `jsPsych.run(timeline)` for you, so your code should

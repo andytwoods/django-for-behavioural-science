@@ -14,7 +14,7 @@ recommended way to record completion is to redirect the participant to a specifi
 --8<-- "study/models.py:study-flags"
 ```
 
-Then run the migrations:
+Then run the migrations (see [Chapter 4a for screenshots](04-capturing-data.md#migration-output)):
 
 --8<-- "includes/migrate-reminder.md"
 

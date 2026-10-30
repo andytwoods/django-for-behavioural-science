@@ -11,6 +11,7 @@ Usage:  uv run python scripts/screenshots.py
 """
 from __future__ import annotations
 
+import html
 import shutil
 import subprocess
 import sys
@@ -208,6 +209,61 @@ def capture_m1_admin() -> None:
         shutil.rmtree(work, ignore_errors=True)
 
 
+TERMINAL_STYLE = (
+    "margin:0;padding:16px 20px;width:760px;box-sizing:border-box;background:#1e1e1e;"
+    "color:#d4d4d4;font:14px/1.5 Consolas,Menlo,monospace;white-space:pre-wrap;"
+)
+
+
+def capture_migration_output() -> None:
+    """Photograph real ``makemigrations``/``migrate`` output for chapter 4a.
+
+    Starts from the ``m1-study-model`` tag and adds the chapter's ``capture-models`` region,
+    which is the change a reader has just made. Running both commands twice gives the two
+    shots: migrations applied, then nothing left to do. Uses a throwaway worktree, as
+    capture_m1_admin() does, so your own database is never touched.
+    """
+    work = Path(tempfile.mkdtemp(prefix="screenshots-migrate-"))
+    tree = work / "repo"
+    subprocess.run(["git", "worktree", "add", "--detach", str(tree), "m1-study-model"],
+                   cwd=ROOT, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+    def session() -> str:
+        """Both commands as a reader sees them: what they type, then what comes back."""
+        lines = []
+        for command in ("makemigrations", "migrate"):
+            result = subprocess.run([sys.executable, "manage.py", command], cwd=tree,
+                                    check=True, capture_output=True, text=True)
+            lines.append(f"$ uv run python manage.py {command}\n{result.stdout}")
+        return "\n".join(lines).strip()
+
+    try:
+        subprocess.run([sys.executable, "manage.py", "migrate"], cwd=tree,
+                       check=True, stdout=subprocess.DEVNULL)
+        source = (ROOT / "study" / "models.py").read_text(encoding="utf-8")
+        models = source.split("# --8<-- [start:capture-models]\n")[1]
+        models = models.split("# --8<-- [end:capture-models]")[0]
+        with open(tree / "study" / "models.py", "a", encoding="utf-8") as f:
+            f.write("\n\n" + models)
+
+        shots = {"migrations-applied.png": session(), "migrations-none.png": session()}
+        with sync_playwright() as p:
+            browser = p.chromium.launch()
+            page = browser.new_page(viewport={"width": 800, "height": 300})
+            for out_name, output in shots.items():
+                # Django colours OK green in a terminal, but not when its output is piped.
+                body = html.escape(output).replace(" OK", " <span style='color:#4ec94e'>OK</span>")
+                page.set_content(f"<pre style='{TERMINAL_STYLE}'>{body}</pre>")
+                OUT_DIR.mkdir(parents=True, exist_ok=True)
+                page.locator("pre").screenshot(path=str(OUT_DIR / out_name))
+                print(f"  captured {out_name}")
+            browser.close()
+    finally:
+        subprocess.run(["git", "worktree", "remove", "--force", str(tree)],
+                       cwd=ROOT, check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        shutil.rmtree(work, ignore_errors=True)
+
+
 def main() -> int:
     seed_demo_data()
     server = subprocess.Popen(
@@ -303,6 +359,9 @@ def main() -> int:
 
         print("Capturing the chapter-2 milestone admin:")
         capture_m1_admin()
+
+        print("Capturing the migration output:")
+        capture_migration_output()
 
         print(f"\nAll screenshots written to {OUT_DIR.relative_to(ROOT)}/")
         return 0
