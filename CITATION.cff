@@ -6,8 +6,8 @@ abstract: >-
   experiment on a bespoke Django backend and capture, manage and export the data.
   Companion to Woods (2026), Behavior Research Methods.
 type: software
-version: 0.1.0
-date-released: 2026-09-05
+version: 0.1.1
+date-released: 2026-10-30
 authors:
   - family-names: Woods
     given-names: Andy
